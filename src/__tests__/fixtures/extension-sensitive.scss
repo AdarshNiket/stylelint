@@ -1,0 +1,5 @@
+// Needs to cause at least one syntax error if not parsed with postcss-scss
+a, // single-line comment
+b {
+  color: pink; // wahoo
+}

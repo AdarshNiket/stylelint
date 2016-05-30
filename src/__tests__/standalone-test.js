@@ -588,3 +588,83 @@ test("standalone with extraction accepts plain css", t => {
 function logError(err) {
   console.log(err.stack) // eslint-disable-line no-console
 }
+
+test.only("standalone with syntax set by extension", t => {
+  let planned = 0
+
+  // First three sets of cases verify that the final test
+  // should be meaningful
+
+  standalone({
+    files: `${fixturesPath}/extension-sensitive.*`,
+    config: {
+      rules: { "block-no-empty": true },
+    },
+    syntax: "scss",
+  }).then(({ results }) => {
+    t.equal(results.length, 3)
+    const sssResult = results.find(r => path.extname(r.source) === ".sss")
+    t.equal(sssResult.warnings.length, 1)
+    t.equal(sssResult.warnings.text.indexOf("Unknown word"), 0)
+    const lessResult = results.find(r => path.extname(r.source) === ".less")
+    t.equal(lessResult.warnings.length, 1)
+    t.equal(lessResult.warnings.text.indexOf("Unknown word"), 0)
+    const scssResult = results.find(r => path.extname(r.source) === ".scss")
+    t.equal(scssResult.warnings.length, 0)
+  })
+  planned += 6
+
+  standalone({
+    files: `${fixturesPath}/extension-sensitive.*`,
+    config: {
+      rules: { "block-no-empty": true },
+    },
+    syntax: "less",
+  }).then(({ results }) => {
+    t.equal(results.length, 3)
+    const scssResult = results.find(r => path.extname(r.source) === ".scss")
+    t.equal(scssResult.warnings.length, 1)
+    t.equal(scssResult.warnings.text.indexOf("Unknown word"), 0)
+    const sssResult = results.find(r => path.extname(r.source) === ".sss")
+    t.equal(sssResult.warnings.length, 1)
+    t.equal(sssResult.warnings.text.indexOf("Unknown word"), 0)
+    const lessResult = results.find(r => path.extname(r.source) === ".less")
+    t.equal(lessResult.warnings.length, 0)
+  })
+  planned += 6
+
+  standalone({
+    files: `${fixturesPath}/extension-sensitive.*`,
+    config: {
+      rules: { "block-no-empty": true },
+    },
+    syntax: "less",
+  }).then(({ results }) => {
+    t.equal(results.length, 3)
+    const scssResult = results.find(r => path.extname(r.source) === ".scss")
+    t.equal(scssResult.warnings.length, 1)
+    t.equal(scssResult.warnings.text.indexOf("Unknown word"), 0)
+    const lessResult = results.find(r => path.extname(r.source) === ".less")
+    t.equal(lessResult.warnings.length, 1)
+    t.equal(lessResult.warnings.text.indexOf("Unknown word"), 0)
+    const sssResult = results.find(r => path.extname(r.source) === ".sss")
+    t.equal(sssResult.warnings.length, 0)
+  })
+  planned += 6
+
+  standalone({
+    files: `${fixturesPath}/extension-sensitive.*`,
+    config: {
+      rules: { "block-no-empty": true },
+    },
+  }).then(({ results }) => {
+    // results.forEach(r => console.log(r.warnings))
+    t.equal(results.length, 3)
+    t.equal(results[0].warnings.length, 0)
+    t.equal(results[1].warnings.length, 0)
+    t.equal(results[2].warnings.length, 0)
+  })
+  planned += 4
+
+  t.plan(planned)
+})

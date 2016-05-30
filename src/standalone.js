@@ -1,3 +1,4 @@
+import path from "path"
 import postcss from "postcss"
 import globby from "globby"
 import _ from "lodash"
@@ -103,16 +104,13 @@ export default function ({
       extractMap = extracted.map
     }
 
-    switch (syntax) {
-      case "scss":
-        postcssProcessOptions.syntax = scssSyntax
-        break
-      case "less":
-        postcssProcessOptions.syntax = lessSyntax
-        break
-      case "sugarss":
-        postcssProcessOptions.syntax = sugarss
-        break
+    const fileExtension = path.extname(filepath)
+    if (syntax === "scss" || fileExtension === ".scss") {
+      postcssProcessOptions.syntax = scssSyntax
+    } else if (syntax === "less" || fileExtension === ".less") {
+      postcssProcessOptions.syntax = lessSyntax
+    } else if (syntax === "sugarss" || fileExtension === ".sss") {
+      postcssProcessOptions.syntax = sugarss
     }
 
     return getPostcss()
